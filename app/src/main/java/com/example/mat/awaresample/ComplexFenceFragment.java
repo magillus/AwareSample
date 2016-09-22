@@ -61,10 +61,11 @@ public class ComplexFenceFragment extends Fragment {
     }
 
     private void addActivityText(String text) {
-        fenceActivityText.setText(fenceActivityText.getText()+"\n"+text);
+        fenceActivityText.setText(fenceActivityText.getText() + "\n" + text);
     }
+
     private void addSetupText(String text) {
-        fenceSetupText.setText(fenceSetupText.getText()+"\n"+text);
+        fenceSetupText.setText(fenceSetupText.getText() + "\n" + text);
     }
 
 
@@ -87,151 +88,50 @@ public class ComplexFenceFragment extends Fragment {
         activity.registerReceiver(broadcastReceiver, new IntentFilter("FENCE_RECEIVER_ACTION"));
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         AwarenessFence atWorkFence = LocationFence.in(41.9328746, -87.709752, 100, 30 * 1000);
         AwarenessFence stillFence = DetectedActivityFence.during(DetectedActivityFence.STILL);
 
         AwarenessFence stillAtWork = AwarenessFence.and(atWorkFence, stillFence);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         Awareness.FenceApi.updateFences(activity.client,
                 new FenceUpdateRequest.Builder()
                         .addFence("stillAtWorkKey", stillAtWork, fencePendingIntent)
                         .build())
-                .setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                if (status.isSuccess()) {
-                    addSetupText("Fence for activity is setup");
-                } else {
-                    addSetupText("Fence for activity is NOT setup");
-                }
-            }
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                .setResultCallback(status -> {
+                    if (status.isSuccess()) {
+                        addSetupText("Fence for activity is setup");
+                    } else {
+                        addSetupText("Fence for activity is NOT setup");
+                    }
+                });
 
 
         Awareness.FenceApi.queryFences(activity.client,
                 FenceQueryRequest.forFences("stillAtWorkKey"))
-                .setResultCallback(new ResultCallback<FenceQueryResult>() {
-                    @Override
-                    public void onResult(@NonNull FenceQueryResult fenceQueryResult) {
-                        if (!fenceQueryResult.getStatus().isSuccess()) {
-                            addSetupText("Could not query fences: ");
-                            return;
-                        }
-                        FenceStateMap map = fenceQueryResult.getFenceStateMap();
-                        for (String fenceKey : map.getFenceKeys()) {
-                            FenceState fenceState = map.getFenceState(fenceKey);
-                            addActivityText("Fence " + fenceKey + ": "
-                                    + fenceState.getCurrentState()
-                                    + ", was="
-                                    + fenceState.getPreviousState()
-                                    + ", lastUpdateTime="
-                                    + new java.text.SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(
-                                    new Date(fenceState.getLastFenceUpdateTimeMillis())));
-                        }
+                .setResultCallback(fenceQueryResult -> {
+                    if (!fenceQueryResult.getStatus().isSuccess()) {
+                        addSetupText("Could not query fences: ");
+                        return;
+                    }
+                    FenceStateMap map = fenceQueryResult.getFenceStateMap();
+                    for (String fenceKey : map.getFenceKeys()) {
+                        FenceState fenceState = map.getFenceState(fenceKey);
+                        addActivityText("Fence " + fenceKey + ": "
+                                + fenceState.getCurrentState()
+                                + ", was="
+                                + fenceState.getPreviousState()
+                                + ", lastUpdateTime="
+                                + new java.text.SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(
+                                new Date(fenceState.getLastFenceUpdateTimeMillis())));
                     }
                 });
-
 
 
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private class FenceBroadcastReceiver  extends BroadcastReceiver{
+    private class FenceBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             FenceState fenceState = FenceState.extract(intent);

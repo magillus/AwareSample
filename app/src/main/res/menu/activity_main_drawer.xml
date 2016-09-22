@@ -28,6 +28,12 @@
             android:id="@+id/nav_fences_complex"
             android:icon="@drawable/ic_streetview_black_24dp"
             android:title="Fences Complex" />
+
+        <item
+            android:checkable="true"
+            android:id="@+id/nav_fence_still"
+            android:icon="@drawable/ic_place_black_24dp"
+            android:title="Enable notify" />
     </group>
 
 </menu>

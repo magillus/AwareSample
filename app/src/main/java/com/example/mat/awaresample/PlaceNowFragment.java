@@ -53,80 +53,21 @@ public class PlaceNowFragment extends Fragment {
             activity.setTitle("Location now");
 
 
-
-
             if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 333);
             }
 
 
+            Awareness.SnapshotApi.getLocation(activity.client).setResultCallback(locationResult -> {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Awareness.SnapshotApi.getLocation(activity.client).setResultCallback(new ResultCallback<LocationResult>() {
-                @Override
-                public void onResult(@NonNull LocationResult locationResult) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    if (!locationResult.getStatus().isSuccess()) {
-                        txtLabel.setText("Place now not found.");
-                    } else {
-                        txtLabel.setText(String.format("Place now: %f, %f -> %s",
-                                locationResult.getLocation().getLongitude(),
-                                locationResult.getLocation().getLatitude(),
-                                ""));
-                    }
+                if (!locationResult.getStatus().isSuccess()) {
+                    txtLabel.setText("Place now not found.");
+                } else {
+                    txtLabel.setText(String.format("Place now: %f, %f -> %s",
+                            locationResult.getLocation().getLongitude(),
+                            locationResult.getLocation().getLatitude(),
+                            ""));
                 }
             });
         }

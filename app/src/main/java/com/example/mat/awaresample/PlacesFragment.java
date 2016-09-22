@@ -57,32 +57,12 @@ public class PlacesFragment extends Fragment {
     }
 
 
-
-
-
     @Override
     public void onResume() {
         super.onResume();
         final MainActivity activity = (MainActivity) getActivity();
         if (activity != null) {
             activity.setTitle("Places");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -92,77 +72,26 @@ public class PlacesFragment extends Fragment {
             }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             Awareness.SnapshotApi
                     .getPlaces(activity.client)
-                    .setResultCallback(new ResultCallback<PlacesResult>() {
-                @Override
-                public void onResult(@NonNull PlacesResult placesResult) {
+                    .setResultCallback(placesResult -> {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    if (!placesResult.getStatus().isSuccess()) {
-                        Toast.makeText(activity, "No places found.", Toast.LENGTH_SHORT).show();;
-                        placesAdapter.clear();
-                    } else {
-                        placesAdapter.setPlaces(placesResult.getPlaceLikelihoods());
-                        if (placesResult.getPlaceLikelihoods()!=null) {
-                            Toast.makeText(activity,
-                                    String.format("%d places found.",
-                                            placesResult.getPlaceLikelihoods().size()),
-                                    Toast.LENGTH_SHORT).show();
+                        if (!placesResult.getStatus().isSuccess()) {
+                            Toast.makeText(activity, "No places found.", Toast.LENGTH_SHORT).show();
+                            ;
+                            placesAdapter.clear();
                         } else {
-                            Toast.makeText(activity, "No places found. -null", Toast.LENGTH_SHORT).show();
+                            placesAdapter.setPlaces(placesResult.getPlaceLikelihoods());
+                            if (placesResult.getPlaceLikelihoods() != null) {
+                                Toast.makeText(activity,
+                                        String.format("%d places found.",
+                                                placesResult.getPlaceLikelihoods().size()),
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(activity, "No places found. -null", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                }
-            });
+                    });
         }
     }
 
@@ -202,14 +131,17 @@ public class PlacesFragment extends Fragment {
 
     private class PlaceViewHolder extends RecyclerView.ViewHolder {
         TextView txtName;
+        TextView link;
 
         public PlaceViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_place_item, parent, false));
             txtName = (TextView) itemView.findViewById(R.id.place_name);
+            link = (TextView) itemView.findViewById(R.id.place_link);
         }
 
         public void bind(PlaceLikelihood placeLikelihood) {
-            txtName.setText(placeLikelihood.getPlace().getName());
+            txtName.setText(String.format("(%2.2f) - %s", placeLikelihood.getLikelihood(), placeLikelihood.getPlace().getName()));
+            link.setText(placeLikelihood.getPlace().getWebsiteUri().toString());
         }
     }
 }

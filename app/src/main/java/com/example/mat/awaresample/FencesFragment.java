@@ -99,24 +99,21 @@ public class FencesFragment extends Fragment {
 
         Awareness.FenceApi.queryFences(activity.client,
                 FenceQueryRequest.forFences("stillStartFenceKey", "stillStopFenceKey"))
-                .setResultCallback(new ResultCallback<FenceQueryResult>() {
-                    @Override
-                    public void onResult(@NonNull FenceQueryResult fenceQueryResult) {
-                        if (!fenceQueryResult.getStatus().isSuccess()) {
-                            addSetupText("Could not query fences: ");
-                            return;
-                        }
-                        FenceStateMap map = fenceQueryResult.getFenceStateMap();
-                        for (String fenceKey : map.getFenceKeys()) {
-                            FenceState fenceState = map.getFenceState(fenceKey);
-                            addActivityText("Fence " + fenceKey + ": "
-                                    + fenceState.getCurrentState()
-                                    + ", was="
-                                    + fenceState.getPreviousState()
-                                    + ", lastUpdateTime="
-                                    + new java.text.SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(
-                                    new Date(fenceState.getLastFenceUpdateTimeMillis())));
-                        }
+                .setResultCallback(fenceQueryResult -> {
+                    if (!fenceQueryResult.getStatus().isSuccess()) {
+                        addSetupText("Could not query fences: ");
+                        return;
+                    }
+                    FenceStateMap map = fenceQueryResult.getFenceStateMap();
+                    for (String fenceKey : map.getFenceKeys()) {
+                        FenceState fenceState = map.getFenceState(fenceKey);
+                        addActivityText("Fence " + fenceKey + ": "
+                                + fenceState.getCurrentState()
+                                + ", was="
+                                + fenceState.getPreviousState()
+                                + ", lastUpdateTime="
+                                + new java.text.SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(
+                                new Date(fenceState.getLastFenceUpdateTimeMillis())));
                     }
                 });
 

@@ -51,120 +51,58 @@ public class WeatherFragment extends Fragment {
         if (activity != null) {
             activity.setTitle("Weather");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // MAY I?
-
-
             if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 333);
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             Awareness.SnapshotApi
                     .getWeather(activity.client)
-                    .setResultCallback(new ResultCallback<WeatherResult>() {
-                @Override
-                public void onResult(@NonNull WeatherResult weatherResult) {
+                    .setResultCallback(weatherResult -> {
 
+                        if (!weatherResult.getStatus().isSuccess()) {
+                            weatherText.setText("No weather data.");
+                        } else {
 
+                            float cTemp = weatherResult.getWeather().getTemperature(Weather.CELSIUS);
+                            float fTemp = weatherResult.getWeather().getTemperature(Weather.FAHRENHEIT);
+                            int humidity = weatherResult.getWeather().getHumidity();
+                            StringBuilder sb = new StringBuilder("Conditions: ");
+                            for (int conditionId : weatherResult.getWeather().getConditions()) {
+                                sb.append(getConditionText(conditionId));
+                                sb.append("\t");
+                            }
 
+                            weatherText.setText(String.format("temp: \n%f C\t\t %f F\n\nHumid: %d\n\n Forecast:%s",
+                                    cTemp, fTemp, humidity, sb.toString()
+                            ));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    if (!weatherResult.getStatus().isSuccess()) {
-                        weatherText.setText("No weather data.");
-                    } else {
-
-                        float cTemp = weatherResult.getWeather().getTemperature(Weather.CELSIUS);
-                        float fTemp = weatherResult.getWeather().getTemperature(Weather.FAHRENHEIT);
-                        int humidity = weatherResult.getWeather().getHumidity();
-                        StringBuilder sb = new StringBuilder("Conditions: ");
-                        for (int conditionId : weatherResult.getWeather().getConditions()) {
-                            sb.append(getConditionText(conditionId));
-                            sb.append("\t");
                         }
-
-                        weatherText.setText(String.format("temp: \n%f C\t\t %f F\n\nHumid: %d\n\n Forecast:%s",
-                                cTemp, fTemp, humidity, sb.toString()
-                        ));
-
-                    }
-                }
-            });
+                    });
         }
 
     }
 
     private String getConditionText(int conditionId) {
         switch (conditionId) {
-            case Weather.CONDITION_CLEAR: return "Clear";
-            case Weather.CONDITION_CLOUDY: return "Cloudy";
-            case Weather.CONDITION_FOGGY: return "Foggy";
-            case Weather.CONDITION_HAZY: return "Hazy";
-            case Weather.CONDITION_ICY: return "Icy";
-            case Weather.CONDITION_RAINY: return "Rainy";
-            case Weather.CONDITION_SNOWY: return "Snowy";
-            case Weather.CONDITION_WINDY: return "Widny";
+            case Weather.CONDITION_CLEAR:
+                return "Clear";
+            case Weather.CONDITION_CLOUDY:
+                return "Cloudy";
+            case Weather.CONDITION_FOGGY:
+                return "Foggy";
+            case Weather.CONDITION_HAZY:
+                return "Hazy";
+            case Weather.CONDITION_ICY:
+                return "Icy";
+            case Weather.CONDITION_RAINY:
+                return "Rainy";
+            case Weather.CONDITION_SNOWY:
+                return "Snowy";
+            case Weather.CONDITION_WINDY:
+                return "Widny";
             default:
-            case Weather.CONDITION_UNKNOWN: return "N/A";
+            case Weather.CONDITION_UNKNOWN:
+                return "N/A";
         }
     }
 }

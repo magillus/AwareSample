@@ -64,78 +64,29 @@ public class HeadphoneFragment extends Fragment {
         if (activity != null) {
             activity.setTitle("Headphones");
 
-            Awareness.SnapshotApi.getHeadphoneState(activity.client).setResultCallback(new ResultCallback<HeadphoneStateResult>() {
-                @Override
-                public void onResult(@NonNull HeadphoneStateResult headphoneStateResult) {
+            Awareness.SnapshotApi.getHeadphoneState(activity.client).setResultCallback(headphoneStateResult -> {
 
-                    ImageView statusImageView = (ImageView) getView().findViewById(R.id.img_headphone_state);
+                ImageView statusImageView = (ImageView) getView().findViewById(R.id.img_headphone_state);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    if (!headphoneStateResult.getStatus().isSuccess()) {
-                        statusImageView.setImageDrawable(AppCompatResources.getDrawable(activity,
-                                R.drawable.cross));
-                    } else {
-                        switch (headphoneStateResult.getHeadphoneState().getState()) {
-                            case HeadphoneState.PLUGGED_IN:
-                                statusImageView.setImageDrawable(AppCompatResources.getDrawable(activity,
-                                        R.drawable.checkmark));
-                                break;
-                            case HeadphoneState.UNPLUGGED:
-                                statusImageView.setImageDrawable(AppCompatResources.getDrawable(activity,
-                                        R.drawable.minus));
-                                break;
-                        }
+                if (!headphoneStateResult.getStatus().isSuccess()) {
+                    statusImageView.setImageDrawable(AppCompatResources.getDrawable(activity,
+                            R.drawable.cross));
+                } else {
+                    switch (headphoneStateResult.getHeadphoneState().getState()) {
+                        case HeadphoneState.PLUGGED_IN:
+                            statusImageView.setImageDrawable(AppCompatResources.getDrawable(activity,
+                                    R.drawable.checkmark));
+                            break;
+                        case HeadphoneState.UNPLUGGED:
+                            statusImageView.setImageDrawable(AppCompatResources.getDrawable(activity,
+                                    R.drawable.minus));
+                            break;
                     }
                 }
             });
 
             /// LOOK DOWN!!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             // register headphone fence
@@ -147,67 +98,20 @@ public class HeadphoneFragment extends Fragment {
             AwarenessFence fence = HeadphoneFence.during(HeadphoneState.PLUGGED_IN);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             Awareness.FenceApi.updateFences(activity.client, new FenceUpdateRequest.Builder()
                     .addFence("headphoneFenceKey", fence, fenceIntent)
-                    .build()).setResultCallback(new ResultCallback<Status>() {
-                @Override
-                public void onResult(@NonNull Status status) {
-                    if (status.isSuccess()) {
-                        Log.i(TAG, "Fence for headphones in registered");
-                    } else {
-                        Log.i(TAG, "Fence for headphones in NOT registered");
-                    }
-                }
-            });
+                    .build()).setResultCallback(status -> {
+                        if (status.isSuccess()) {
+                            Log.i(TAG, "Fence for headphones in registered");
+                        } else {
+                            Log.i(TAG, "Fence for headphones in NOT registered");
+                        }
+                    });
         }
     }
 
     PendingIntent fenceIntent;
     HeadphoneFenceReceiver receiver;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private class HeadphoneFenceReceiver extends BroadcastReceiver {

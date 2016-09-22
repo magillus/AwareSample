@@ -1,5 +1,6 @@
 package com.example.mat.awaresample;
 
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,9 +19,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.fence.AwarenessFence;
+import com.google.android.gms.awareness.fence.DetectedActivityFence;
+import com.google.android.gms.awareness.fence.FenceUpdateRequest;
 import com.google.android.gms.awareness.snapshot.DetectedActivityResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
@@ -145,6 +150,7 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
     private void showFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -168,12 +174,43 @@ public class MainActivity extends AppCompatActivity
             showFragment(new WeatherFragment());
         } else if (id == R.id.nav_fences) {
             showFragment(new FencesFragment());
-        }  else if (id == R.id.nav_fences_complex) {
+        } else if (id == R.id.nav_fences_complex) {
             showFragment(new ComplexFenceFragment());
+        } else if (id == R.id.nav_fence_still) {
+            if (!item.isChecked()) { // reversed checked happens after this callback
+                registerFence();
+            } else {
+                unregisterFence();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    private void registerFence() {
+        AwarenessFence stillFence = DetectedActivityFence.during(DetectedActivityFence.STILL);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, IAmStillBroadcastReceiver.getIntent(), 0);
+        Awareness.FenceApi.updateFences(client, new FenceUpdateRequest.Builder()
+                .addFence(IAmStillBroadcastReceiver.STILL_FENCE_KEY, stillFence, pendingIntent)
+                .build()).setResultCallback(status -> {
+            if (!status.isSuccess()) {
+                Toast.makeText(getBaseContext(), "Registration not successful", Toast.LENGTH_SHORT).show();
+                // toggle menu item
+            } else {
+                Toast.makeText(getBaseContext(), "Registration successful", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void unregisterFence() {
+        Awareness.FenceApi.updateFences(client, new FenceUpdateRequest.Builder()
+                .removeFence(IAmStillBroadcastReceiver.STILL_FENCE_KEY).build())
+                .setResultCallback(status -> Toast.makeText(getBaseContext(),
+                        String.format("Un-registration was %s", status.isSuccess() ? "successful" : "un-successful"),
+                        Toast.LENGTH_SHORT).show());
     }
 }
