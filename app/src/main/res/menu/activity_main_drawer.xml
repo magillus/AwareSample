@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_places"
+            android:icon="@drawable/ic_place_black_24dp"
+            android:title="Nearby Places" />
+        <item
+            android:id="@+id/nav_headphone"
+            android:icon="@drawable/ic_headset_black_24dp"
+            android:title="Headphone" />
+        <item
+            android:id="@+id/nav_place_now"
+            android:icon="@drawable/ic_place_black_24dp"
+            android:title="Place Now at" />
+        <item
+            android:id="@+id/nav_weather"
+            android:icon="@drawable/ic_wb_cloudy_black_24dp"
+            android:title="Weather Here" />
+
+        <item
+            android:id="@+id/nav_fences"
+            android:icon="@drawable/ic_streetview_black_24dp"
+            android:title="Fences" />
+
+        <item
+            android:id="@+id/nav_fences_complex"
+            android:icon="@drawable/ic_streetview_black_24dp"
+            android:title="Fences Complex" />
+    </group>
+
+</menu>
