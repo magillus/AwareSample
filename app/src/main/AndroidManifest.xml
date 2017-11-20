@@ -24,10 +24,10 @@
 
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
-            android:value="AIzaSyDI2wKwUq4A5kdOTYb05VIjpj53RBANNv4" />
+            android:value="AIzaSyDmKJTnvYLHBSRe9Qj1OppcgTv6LS7MTA8" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCUNeumysc0hrjqtSolr1LCuQcWtxQcjZg" />
+            android:value="AIzaSyDmKJTnvYLHBSRe9Qj1OppcgTv6LS7MTA8" />
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="AIzaSyAHsomZzgODf2P8XUmCu8W-6vwYGifKDpM" />

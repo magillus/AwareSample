@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AwareSample.iml" filepath="$PROJECT_DIR$/AwareSample.iml" />
+      <module fileurl="file://C:\Projects\opensource\AwareSample\AwareSample.iml" filepath="C:\Projects\opensource\AwareSample\AwareSample.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Projects\opensource\AwareSample\app\app.iml" filepath="C:\Projects\opensource\AwareSample\app\app.iml" />
     </modules>
   </component>
 </project>
